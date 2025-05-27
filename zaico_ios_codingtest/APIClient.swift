@@ -11,9 +11,17 @@ class APIClient {
     static let shared = APIClient()
     
     private let baseURL = "https://web.zaico.co.jp"
-    private let token = "YOUR_ACCESS_TOKEN" // 実際のトークンに置き換える
+    private let token = "f4jDRwENV2BCBs6HX6Tvya8MeNn7hdkw" // 実際のトークンに置き換える -> ベタ打ちよりQRコード読み取りなどが理想
     
     private init() {}
+    
+    // 在庫作成用のAPIClientを別ファイルで作成したため、以下のgetterを配置
+    internal func getBaseURL() -> String {
+        return baseURL
+    }
+    internal func getToken() -> String {
+        return token
+    }
 
     func fetchInventories() async throws -> [Inventory] {
         let endpoint = "/api/v1/inventories"
