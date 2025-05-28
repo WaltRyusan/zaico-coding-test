@@ -12,7 +12,9 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     private let inventoryId: Int
     private var inventory: Inventory?
     private let tableView = UITableView()
-    private let cellTitles = ["ID", "在庫画像", "タイトル", "数量"]
+    
+    // セルのタイトル順序を変更：画像を最後に
+    private let cellTitles = ["ID", "タイトル", "数量", "在庫画像"]
     
     // initメソッドでIDを渡す
     init(id: Int) {
@@ -71,29 +73,20 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "InventoryCell", for: indexPath) as! InventoryCell
         switch indexPath.row {
-        case 0:
+        case 0: // ID
             let cell = tableView.dequeueReusableCell(withIdentifier: "InventoryCell", for: indexPath) as! InventoryCell
             cell.configure(leftText: cellTitles[indexPath.row],
                            rightText: String(inventory?.id ?? 0))
             return cell
-        case 1:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "InventoryImageCell", for: indexPath) as! InventoryImageCell
-            if let imageURL = inventory?.itemImage?.url {
-                cell.configure(leftText: cellTitles[indexPath.row],
-                               rightImageURLString: imageURL)
-            } else {
-                cell.configure(leftText: cellTitles[indexPath.row],
-                               rightImageURLString: "imageURL")
-            }
-            return cell
-        case 2:
+            
+        case 1: // タイトル
             let cell = tableView.dequeueReusableCell(withIdentifier: "InventoryCell", for: indexPath) as! InventoryCell
             cell.configure(leftText: cellTitles[indexPath.row],
                            rightText: inventory?.title ?? "")
             return cell
-        case 3:
+            
+        case 2: // 数量
             let cell = tableView.dequeueReusableCell(withIdentifier: "InventoryCell", for: indexPath) as! InventoryCell
             var quantity = "0"
             if let q = inventory?.quantity {
@@ -102,15 +95,25 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             cell.configure(leftText: cellTitles[indexPath.row],
                            rightText: quantity)
             return cell
+            
+        case 3: // 在庫画像（最後に移動）
+            let cell = tableView.dequeueReusableCell(withIdentifier: "InventoryImageCell", for: indexPath) as! InventoryImageCell
+            if let imageURL = inventory?.itemImage?.url {
+                cell.configure(leftText: cellTitles[indexPath.row],
+                              rightImageURLString: imageURL)
+            } else {
+                cell.configure(leftText: cellTitles[indexPath.row],
+                              rightImageURLString: "")
+            }
+            return cell
+            
         default:
-            break
+            let cell = tableView.dequeueReusableCell(withIdentifier: "InventoryCell", for: indexPath) as! InventoryCell
+            return cell
         }
-        
-        return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
 }
-
